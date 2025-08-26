@@ -1,7 +1,19 @@
-import Image from "next/image";
-
+"use client"
+import Work from "./components/Work";
+import Navbar from "./components/Navbar";
+import Services from "./components/Service";
+import Headers from "./components/Headers";
+import About from "./components/About";
+import Contact from "./components/contact";
 export default function Home() {
   return (
-    <></>
+    <>
+      <Navbar/>
+      <Headers/>
+      <About/>
+      <Services/>
+      <Work />
+      <Contact />
+    </>
   );
 }
