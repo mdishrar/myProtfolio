@@ -4,6 +4,13 @@
 @tailwind components;
 @tailwind utilities;
 
+
+:root {
+  --background: #ffffff;
+  --foreground: #111111;
+}
+
+
 @theme{
   --color-lightHover: #fcf4ff;
   --color-darktheme: #11001F;

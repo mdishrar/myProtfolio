@@ -4,7 +4,8 @@ import Navbar from "./components/Navbar";
 import Services from "./components/Service";
 import Headers from "./components/Headers";
 import About from "./components/About";
-import Contact from "./components/contact";
+import Contact from "./components/Contact";
+import Footer from "./components/Footer";
 export default function Home() {
   return (
     <>
@@ -14,6 +15,7 @@ export default function Home() {
       <Services/>
       <Work />
       <Contact />
+      <Footer/>
     </>
   );
 }
