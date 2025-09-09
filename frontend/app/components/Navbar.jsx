@@ -1,83 +1,128 @@
-import { assets } from "@/assets/assets"; 
-import Image from "next/image"; 
-import { useEffect, useRef, useState } from "react";
+import { assets } from "@/assets/assets"
+import Image from "next/image"
+import { useEffect, useRef, useState } from "react"
 
 const Navbar = () => {
-    const sideMenuRef = useRef();
-    const [isScroll, setIsScroll] = useState(false);
+  const sideMenuRef = useRef()
+  const [isScroll, setIsScroll] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(false)
 
-    const closeMenu = () => {
-        sideMenuRef.current.style.transform = "translateX(16rem)";
+  const closeMenu = () => {
+    sideMenuRef.current.style.transform = "translateX(100%)"
+  }
+
+  const openMenu = () => {
+    sideMenuRef.current.style.transform = "translateX(0%)"
+  }
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScroll(true)
+      } else {
+        setIsScroll(false)
+      }
     }
-    
-    const openMenu = () => {
-        sideMenuRef.current.style.transform = "translateX(-16rem)";
-    } 
-    
-    useEffect(() => { 
-        window.addEventListener('scroll', () => {
-            if (scrollY > 50) { 
-                setIsScroll(true);
-            } else { 
-                setIsScroll(false); 
-            }
-        }) 
-    }, []) 
-    
-    return (
-        <>
-            <div className="fixed top-0 right-0 w-11/12 -z-10 translate-y-[-80%]">
-                <Image src={assets.header_bg_color} alt="" className="w-full" />
-            </div>
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const toggleTheme = () => {
+    setIsDarkMode(prev => {
+      const newMode = !prev
+      if (newMode) {
+        document.documentElement.classList.add('dark')
+        localStorage.theme = 'dark'
+      } else {
+        document.documentElement.classList.remove('dark')
+        localStorage.theme = 'light'
+      }
+      return newMode
+    })
+  }
+
+  return (
+    <>
+      <div className={`fixed top-0 right-0 w-11/12 -z-10 translate-y-[-80%] transition-transform duration-500 ${isScroll ? 'translate-y-0 bg-white shadow-sm dark:bg-darkTheme dark:shadow-white/20' : ''}`}>
+        <div className="w-full px-4 sm:px-6 lg:px-[12%] py-4 flex items-center justify-between text-lg">
+          <Image 
+            src={assets.logo} 
+            alt="Logo" 
+            className="w-20 sm:w-28 cursor-pointer mr-14 dark:hidden"
+          />
+          <Image 
+            src={assets.logo_dark} 
+            alt="Logo" 
+            className="w-20 sm:w-28 cursor-pointer mr-14 hidden dark:block"
+          />
+          
+          <ul className="hidden md:flex items-center gap-6 lg:gap-8 rounded-full px-6 lg:px-12 py-3 bg-white shadow-sm dark:border dark:border-white/50 dark:bg-transparent">
+            <li><a className="font-Ovo hover:text-blue-500 transition-colors duration-300" href="#top">Home</a></li>
+            <li><a className="font-Ovo hover:text-blue-500 transition-colors duration-300" href="#about">About me</a></li>
+            <li><a className="font-Ovo hover:text-blue-500 transition-colors duration-300" href="#services">Services</a></li>
+            <li><a className="font-Ovo hover:text-blue-500 transition-colors duration-300" href="#work">My Work</a></li>
+            <li><a className="font-Ovo hover:text-blue-500 transition-colors duration-300" href="#contact">Contact me</a></li>
+          </ul>
+          
+          <div className="flex items-center gap-4">
+            <button onClick={toggleTheme} className="w-6 h-6 cursor-pointer hover:scale-110 transition-transform">
+              {isDarkMode ? (
+                <Image src={assets.sun_icon} alt="Light mode" className="w-6 h-6" />
+              ) : (
+                <Image src={assets.moon_icon} alt="Dark mode" className="w-6 h-6" />
+              )}
+            </button>
             
-            <nav className={`w-full px-5 lg:px-8 xl:px-[8%] py-4 flex items-center justify-between z-50 ${
-                isScroll ? "bg-white bg-opacity-50 backdrop-blur-lg shadow-sm" : ""
-            }`}>
-                <a href='#top'>
-                    <Image src={assets.logo} alt="" className="w-28 cursor-pointer mr-14" /> 
-                </a>
-                
-                <ul className={`hidden md:flex gap-6 items-center lg:gap-8 rounded-full px-12 py-3 ${
-                    isScroll ? "" : "bg-white shadow-sm bg-opacity-50"
-                }`}>
-                    <li><a href="#home" className="font-Ovo">Home</a></li>
-                    <li><a href="#about" className="font-Ovo">About me</a></li>
-                    <li><a href="#services" className="font-Ovo">Services</a></li>
-                    <li><a href="#work" className="font-Ovo">Work</a></li> 
-                    <li><a href="#contact" className="font-Ovo">Contact</a></li>     
-                </ul>
-                
-                <div className="flex items-center gap-4">
-                    <button> 
-                        <Image src={assets.moon_icon} alt="" className="w-6" />
-                    </button>
-                    <div className="flex"> 
-                        <a href="#contact" className="hidden lg:flex items-center gap-3 px-10 
-                        py-2.5 border border-gray-500 rounded-full ml-4 font-Ovo">
-                            Contact 
-                            <Image src={assets.arrow_icon} alt="" className="w-4" /> 
-                        </a> 
-                        <button className="block md:hidden ml-3" onClick={openMenu}>
-                            <Image src={assets.menu_black} alt="" className="w-6"/> 
-                        </button> 
-                    </div>
-                </div>
-                
-                {/* Mobile Menu */}
-                <ul ref={sideMenuRef} className="flex md:hidden flex-col gap-4 py-20 px-10
-                fixed -right-64 top-0 bottom-0 w-64 z-50 h-screen bg-rose-50 transition 
-                duration-500">
-                    <div className="absolute right-6 top-6 cursor-pointer" onClick={closeMenu}>
-                        <Image src={assets.close_black} alt="" className="w-5" />
-                    </div>
-                    <li><a href="#home" onClick={closeMenu} className="font-Ovo">Home</a></li>
-                    <li><a href="#about" onClick={closeMenu} className="font-Ovo">About me</a></li> 
-                    <li><a href="#services" onClick={closeMenu} className="font-Ovo">Services</a></li> 
-                    <li><a href="#work" onClick={closeMenu} className="font-Ovo">Work</a></li> 
-                    <li><a href="#contact" onClick={closeMenu} className="font-Ovo">Contact</a></li>
-                </ul>
-            </nav> 
-        </>
-    ); 
-} 
-export default Navbar;
+            <button 
+              className="block md:hidden ml-3"
+              onClick={openMenu}
+            >
+              <Image 
+                src={assets.menu_black} 
+                alt="Menu" 
+                className="w-6 h-6 cursor-pointer dark:hidden"
+              />
+              <Image 
+                src={assets.menu_white} 
+                alt="Menu" 
+                className="w-6 h-6 cursor-pointer hidden dark:block"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      {/* Mobile menu */}
+      <div 
+        ref={sideMenuRef}
+        className="fixed top-0 right-0 bottom-0 w-64 z-50 h-screen bg-rose-50 transform translate-x-full transition-transform duration-500 dark:bg-darkHover md:hidden"
+      >
+        <div className="flex justify-end p-6">
+          <Image 
+            src={assets.close_black} 
+            alt="Close" 
+            className="w-5 cursor-pointer dark:hidden"
+            onClick={closeMenu}
+          />
+          <Image 
+            src={assets.close_white} 
+            alt="Close" 
+            className="w-5 cursor-pointer hidden dark:block"
+            onClick={closeMenu}
+          />
+        </div>
+        
+        <ul className="flex flex-col items-center gap-2 mt-5 px-5 text-lg font-Ovo">
+          <a onClick={closeMenu} className="px-4 py-2 rounded-lg inline-block hover:bg-white dark:hover:bg-darkTheme transition-colors duration-300 w-full text-center" href="#top">Home</a>
+          <a onClick={closeMenu} className="px-4 py-2 rounded-lg inline-block hover:bg-white dark:hover:bg-darkTheme transition-colors duration-300 w-full text-center" href="#about">About me</a>
+          <a onClick={closeMenu} className="px-4 py-2 rounded-lg inline-block hover:bg-white dark:hover:bg-darkTheme transition-colors duration-300 w-full text-center" href="#services">Services</a>
+          <a onClick={closeMenu} className="px-4 py-2 rounded-lg inline-block hover:bg-white dark:hover:bg-darkTheme transition-colors duration-300 w-full text-center" href="#work">My Work</a>
+          <a onClick={closeMenu} className="px-4 py-2 rounded-lg inline-block hover:bg-white dark:hover:bg-darkTheme transition-colors duration-300 w-full text-center" href="#contact">Contact me</a>
+        </ul>
+      </div>
+    </>
+  )
+}
+
+export default Navbar
